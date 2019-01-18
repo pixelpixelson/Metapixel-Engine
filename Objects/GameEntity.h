@@ -23,6 +23,12 @@ namespace CoreEngine
 			virtual void Input(GameEngine& engine, float state) = 0;
 			virtual void Update(States::GameState const* state, float step) = 0;
 			virtual void Render(GameEngine& engine) = 0;
+
+			// Called in the game loop, do not call this to destroy the object,
+			// instead set marked_for_destruction to true. The object
+			// will be destoyed *next frame*
+			virtual void Destroy(States::GameState const* state);
+			bool marked_for_destruction = false;
 		};
 	}
 }

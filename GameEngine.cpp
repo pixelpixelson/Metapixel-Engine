@@ -23,6 +23,7 @@ void CoreEngine::GameEngine::PopStateRequest()
 
 void CoreEngine::GameEngine::PushState(States::GameState* state)
 {
+	state->ScreenDimensions(ScreenWidth(), ScreenHeight());
 	state->Start(*this);
 	states.push_back(std::unique_ptr <States::GameState>(state));
 }

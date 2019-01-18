@@ -9,3 +9,7 @@ CoreEngine::Objects::GameEntity::GameEntity(Vector::Vector2 position) : position
 CoreEngine::Objects::GameEntity::~GameEntity()
 {
 }
+
+void CoreEngine::Objects::GameEntity::Destroy(States::GameState const * state)
+{
+}

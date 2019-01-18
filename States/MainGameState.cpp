@@ -1,12 +1,21 @@
+#include "../Objects/EntityShip.h"
 #include "../GameEngine.h"
 #include "MainGameState.h"
 #include "MainMenuState.h"
+
 
 using namespace CoreEngine;
 
 void CoreEngine::States::MainGameState::Start(GameEngine & engine)
 {
+	using namespace Vector;
+	using namespace Objects;
+
 	engine.Clear(olc::BLACK);
+
+	// add ships
+	SpawnEntity(new Objects::EntityShip(Vector2(0.0f, engine.ScreenHeight() / 2.0f), EntityShip::Kind::Player));
+	SpawnEntity(new Objects::EntityShip(Vector2(engine.ScreenWidth() - 30.0f, engine.ScreenHeight() / 2.0f), EntityShip::Kind::Enemy));
 }
 
 void CoreEngine::States::MainGameState::Exit(GameEngine & engine)
@@ -37,50 +46,23 @@ void CoreEngine::States::MainGameState::Input(GameEngine & engine, float time_st
 
 void CoreEngine::States::MainGameState::Update(GameEngine& engine, float time_step)
 {
-	for (auto& entity : entities)
+	for (auto iterator = entities.begin(); iterator < entities.end(); ++iterator)
 	{
-		entity->Update(this, time_step);
+		if(iterator->get()->marked_for_destruction)
+		{
+			iterator->get()->Destroy(this);
+			iterator = entities.erase(iterator);
+		}
+		else
+		{
+			iterator->get()->Update(this, time_step);
+		}
 	}
 }
 
 void CoreEngine::States::MainGameState::Render(GameEngine& engine)
 {
 	engine.Clear(olc::BLACK);
-
-
-	// Just put random garbage to the screen
-	for (int i = 0; i < 3; ++i)
-		switch (rand() % 3)
-		{
-		case 0:
-			engine.FillTriangle(
-				rand() % engine.ScreenWidth(),
-				rand() % engine.ScreenHeight(),
-				rand() % engine.ScreenWidth(),
-				rand() % engine.ScreenHeight(),
-				rand() % engine.ScreenWidth(),
-				rand() % engine.ScreenHeight(),
-				olc::Pixel(rand() % 256, rand() % 256, rand() % 256)
-			);
-			break;
-		case 1:
-			engine.FillRect(
-				rand() % engine.ScreenWidth(),
-				rand() % engine.ScreenHeight(),
-				rand() % engine.ScreenWidth(),
-				rand() % engine.ScreenHeight(),
-				olc::Pixel(rand() % 256, rand() % 256, rand() % 256));
-			break;
-		case 2:
-			engine.FillCircle(
-				rand() % engine.ScreenWidth(),
-				rand() % engine.ScreenHeight(),
-				rand() % 50,
-				olc::Pixel(rand() % 256, rand() % 256, rand() % 256));
-			break;
-		}
-	
-
 	engine.DrawString(0, 0, "Main Game State, Escape to return to menu");
 
 	for (auto& entity : entities)

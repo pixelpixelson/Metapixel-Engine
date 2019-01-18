@@ -1,4 +1,5 @@
 #include "../GameEngine.h"
+#include "../Vector/Vector2.h"
 #include "GameState.h"
 
 CoreEngine::States::GameState::GameState()
@@ -26,6 +27,17 @@ void CoreEngine::States::GameState::Tick(GameEngine& engine, float delta_time)
 		
 		Update(engine, PhysicsTimeStep);
 	}
-	
+
 	Render(engine);
+}
+
+CoreEngine::Vector::Vector2 CoreEngine::States::GameState::ScreenDimensions() const
+{
+	return Vector::Vector2(screen_width, screen_height);
+}
+
+void CoreEngine::States::GameState::ScreenDimensions(float w, float h)
+{
+	screen_width = w;
+	screen_height = h;
 }
